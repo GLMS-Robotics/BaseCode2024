@@ -6,6 +6,10 @@ import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 
+/**
+ * This class expands an Action's lifecycle into multiple methods
+ * to make writing custom Actions easier.
+ */
 public abstract class StagedAction implements Action {
 
     private boolean isStarted = false;

@@ -1,15 +1,34 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.teleops;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.Subsystem;
 
 import java.util.ArrayList;
 
+/**
+ * This class provides a simplified way to use RoadRunner Actions during teleop
+ * by providing an Action scheduling system, similar to the Command Scheduler in WPILib.
+ *
+ * It also calls the periodic function of subsystems automatically.
+ *
+ * Subclasses should override initOpMode and loopOpMode instead of the base opmode's
+ * init and loop methods.
+ *
+ * When writing controls for subsystems, check isBusy(subsystem) first to see if it is
+ * currently running an Action, otherwise your controls may conflict with the Action!
+ *
+ * To schedule an action to be run, call runAction(...) with the action to run and
+ * required subsystems. If a subsystem is currently busy, the existing Action will be cancelled.
+ *
+ * Running actions can be cancelled on a specific subsystem with cancelSubsystem(subsystem),
+ * or on all subsystems with cancelAcions().
+ *
+ */
 public abstract class ActionSchedulerOpMode extends OpMode {
 
     protected final FtcDashboard dash = FtcDashboard.getInstance();

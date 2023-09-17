@@ -11,10 +11,6 @@ import java.util.function.Supplier;
  * This action will decide whether to perform one of two actions based on a condition
  * checked when the action starts running.
  */
-
-/*
-Edited this file as an example.
- */
 public class ConditionalAction implements Action {
 
 

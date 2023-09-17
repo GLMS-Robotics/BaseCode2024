@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.autos;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
@@ -6,8 +6,17 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.Subsystem;
 
+/**
+ * This class provides a simplified way to program a RoadRunner action-based autonomous.
+ * It also supports calling periodic methods defined by the Subystem class.
+ *
+ * Subclasses simply need to override the autonomousActions method to return the actions
+ * to be run during this auto. This will usually be the SequentialAction returned by
+ * the drivetrain's actionBuilder method, or a custom SequentialAction.
+ */
 public abstract class ActionAutonomous extends OpMode {
 
     // The action this Autonomous will run
