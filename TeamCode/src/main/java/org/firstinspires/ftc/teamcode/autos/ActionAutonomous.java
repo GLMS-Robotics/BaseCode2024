@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Robot;
@@ -33,6 +34,21 @@ public abstract class ActionAutonomous extends OpMode {
 
         autoAction = autonomousActions();
         autoAction.preview(c);
+
+        // Loop init action until it finishes
+        Action initAction = initActions();
+        boolean keepRunning = false;
+
+        do {
+            // Create telemetry packet and add field map
+            TelemetryPacket p = new TelemetryPacket();
+            p.fieldOverlay().getOperations().addAll(c.getOperations());
+
+            // Run action and check if finished
+            keepRunning = initAction.run(p);
+
+            dash.sendTelemetryPacket(p);
+        } while(keepRunning);
     }
 
     @Override
@@ -59,6 +75,17 @@ public abstract class ActionAutonomous extends OpMode {
             requestOpModeStop();
         }
     }
+
+    /**
+     * Opmodes should override this function to set actions that should be run
+     * when the opmode is initialized (after hardware initialization).
+     * @return an Action to be run on init
+     */
+    public Action initActions()
+    {
+        return new SleepAction(0);
+    }
+
 
     /**
      * Opmodes should define the action to be taken during autonomous here.

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.actions;
 
 import androidx.annotation.NonNull;
 
+import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 
@@ -50,5 +51,11 @@ public class ConditionalAction implements Action {
         {
             return actionIfFalse.run(telemetryPacket);
         }
+    }
+
+    @Override
+    public void preview(@NonNull Canvas fieldOverlay) {
+        actionIfTrue.preview(fieldOverlay);
+        actionIfFalse.preview(fieldOverlay);
     }
 }
