@@ -31,11 +31,11 @@ public class MeepMeepTesting {
                 .turn(Math.toRadians(90))
                 .build());
 
-        Image img = null;
+        /*Image img = null;
         try { img = ImageIO.read(new File("MeepMeepTesting\\darkfieldtest.png")); }
-        catch (IOException e) {}
+        catch (IOException e) {}*/
 
-        meepMeep.setBackground(img)
+        meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_OFFICIAL)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 .addEntity(myBot)
