@@ -12,3 +12,5 @@ The following tools are included:
 - Action subclasses to simplify action usage and bring Actions closer to parity with WPILib Commands
 	- Staged Action
 	- Conditional Action
+	- Motor To Position Action
+    - Servo To Position Action
