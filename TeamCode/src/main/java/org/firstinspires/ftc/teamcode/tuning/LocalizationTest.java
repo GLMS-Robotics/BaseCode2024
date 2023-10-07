@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.tuning;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.canvas.Canvas;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Twist2d;
@@ -27,6 +30,16 @@ public class LocalizationTest extends LinearOpMode {
                 ));
 
                 drive.updatePoseEstimate();
+
+                Canvas c = new Canvas();
+                TelemetryPacket p = new TelemetryPacket();
+
+                c.setStroke("#3F51B5");
+                drive.drawRobot(c, drive.pose);
+
+                p.fieldOverlay().getOperations().addAll(c.getOperations());
+                FtcDashboard.getInstance().sendTelemetryPacket(p);
+
 
                 telemetry.addData("x", drive.pose.position.x);
                 telemetry.addData("y", drive.pose.position.y);

@@ -38,6 +38,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.subsystems.Subsystem;
 
 import java.lang.Math;
 import java.util.Arrays;
@@ -45,7 +46,28 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Config
-public final class MecanumDrive {
+public final class MecanumDrive extends Subsystem {
+    /**
+     * Method that runs each time the opmode loops.
+     * Usually, you will want to output telemetry here (encoder values and such).
+     * Warning: Actions may be running, so generally you shouldn't control
+     * actuators here, unless you are doing something fun like a state machine
+     * (in which case you probably shouldn't control actuators outside of this method...).
+     * Instead, have your autonomous run actions, and your teleop schedule actions or run methods
+     * directly.
+     *
+     * @param p Telemetry packet for sending data to the driver hub / dashboard
+     */
+    @Override
+    public void periodic(TelemetryPacket p) {
+        Canvas c = new Canvas();
+
+        c.setStroke("#3F51B5");
+        drawRobot(c, pose);
+
+        p.fieldOverlay().getOperations().addAll(c.getOperations());
+    }
+
     public static class Params {
         // drive model parameters
         public double inPerTick = 0;
@@ -194,7 +216,7 @@ public final class MecanumDrive {
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        localizer = new DriveLocalizer();
+        localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick);
 
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
     }
@@ -407,7 +429,7 @@ public final class MecanumDrive {
         c.strokePolyline(xPoints, yPoints);
     }
 
-    private static void drawRobot(Canvas c, Pose2d t) {
+    public static void drawRobot(Canvas c, Pose2d t) {
         final double ROBOT_RADIUS = 9;
 
         c.setStrokeWidth(1);
