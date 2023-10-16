@@ -4,9 +4,11 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.Subsystem;
 
@@ -31,6 +33,10 @@ public abstract class ActionAutonomous extends OpMode {
     @Override
     public void init() {
         Robot.initHardware(hardwareMap);
+
+        // Set robot starting position
+        getDrivetrain().updatePoseEstimate();
+        getDrivetrain().pose = getStartingPose();
 
         autoAction = autonomousActions();
         autoAction.preview(c);
@@ -93,4 +99,22 @@ public abstract class ActionAutonomous extends OpMode {
      * @return an Action representing autonomous (probably built by TrajectoryActionBuilder in
      */
     public abstract Action autonomousActions();
+
+
+    /**
+     * Return a reference to your robot's drivetrain in this function.
+     * This will be used to set the starting pose.
+     */
+    public abstract MecanumDrive getDrivetrain();
+
+
+    /**
+     * This function should return your robot's starting position for this autonomous.
+     * This will only be used if this opmode is actually run, and ignored if
+     * this auto is used in other opmodes.
+     */
+    public abstract Pose2d getStartingPose();
+
+
+
 }
