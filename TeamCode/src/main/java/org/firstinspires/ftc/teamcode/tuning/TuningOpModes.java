@@ -151,6 +151,7 @@ public final class TuningOpModes {
         manager.register(metaForClass(MecanumMotorDirectionDebugger.class), new MecanumMotorDirectionDebugger(dvf));
 
         manager.register(metaForClass(ManualFeedbackTuner.class), ManualFeedbackTuner.class);
+        manager.register(metaForClass(ManualFeedbackTuner2.class), ManualFeedbackTuner2.class);
         manager.register(metaForClass(SplineTest.class), SplineTest.class);
         manager.register(metaForClass(LocalizationTest.class), LocalizationTest.class);
     }
