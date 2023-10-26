@@ -141,96 +141,101 @@ public abstract class ColorProcessor implements VisionProcessor {
      */
     @Override
     public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
-        // Set up paint
-        Paint p = new Paint();
-        p.setColor(Color.BLUE);
-        p.setStrokeWidth(5);
-        p.setStyle(Paint.Style.STROKE);
 
-        // Draw bounding box
-        if(hasResult) {
-            canvas.drawRect(boundingBox.x * scaleBmpPxToCanvasPx, boundingBox.y * scaleBmpPxToCanvasPx,
-                    (boundingBox.width + boundingBox.x) * scaleBmpPxToCanvasPx, (boundingBox.height + boundingBox.y) * scaleBmpPxToCanvasPx, p);
-        }
+        // Prevent zombie mode if pipeline is switched off between process and draw
+        if(userContext != null) {
+            // Set up paint
+            Paint p = new Paint();
+            p.setColor(Color.BLUE);
+            p.setStrokeWidth(5);
+            p.setStyle(Paint.Style.STROKE);
 
-        // Manually draw contour points
-        p.setColor(Color.YELLOW);
-        p.setStrokeWidth(3);
-        for (Object o : (Object[]) userContext) {
-            MatOfPoint contour = (MatOfPoint) o;
-            Point[] pts = contour.toArray();
+            // Draw bounding box
+            if (hasResult) {
+                canvas.drawRect(boundingBox.x * scaleBmpPxToCanvasPx, boundingBox.y * scaleBmpPxToCanvasPx,
+                        (boundingBox.width + boundingBox.x) * scaleBmpPxToCanvasPx, (boundingBox.height + boundingBox.y) * scaleBmpPxToCanvasPx, p);
+            }
 
-            if(pts.length > 1) {
-                for (int j = 0; j < pts.length - 1; j++) {
-                    //canvas.drawPoint((float) pts[j].x * scaleBmpPxToCanvasPx, (float) pts[j].y * scaleBmpPxToCanvasPx, p);
-                    canvas.drawLine((float) pts[j].x * scaleBmpPxToCanvasPx, (float) pts[j].y * scaleBmpPxToCanvasPx,
-                            (float) pts[j+1].x * scaleBmpPxToCanvasPx, (float) pts[j+1].y * scaleBmpPxToCanvasPx,
+            // Manually draw contour points
+            p.setColor(Color.YELLOW);
+            p.setStrokeWidth(3);
+            for (Object o : (Object[]) userContext) {
+                MatOfPoint contour = (MatOfPoint) o;
+                Point[] pts = contour.toArray();
+
+                if (pts.length > 1) {
+                    for (int j = 0; j < pts.length - 1; j++) {
+                        //canvas.drawPoint((float) pts[j].x * scaleBmpPxToCanvasPx, (float) pts[j].y * scaleBmpPxToCanvasPx, p);
+                        canvas.drawLine((float) pts[j].x * scaleBmpPxToCanvasPx, (float) pts[j].y * scaleBmpPxToCanvasPx,
+                                (float) pts[j + 1].x * scaleBmpPxToCanvasPx, (float) pts[j + 1].y * scaleBmpPxToCanvasPx,
+                                p);
+                    }
+                    canvas.drawLine((float) pts[0].x * scaleBmpPxToCanvasPx, (float) pts[0].y * scaleBmpPxToCanvasPx,
+                            (float) pts[pts.length - 1].x * scaleBmpPxToCanvasPx, (float) pts[pts.length - 1].y * scaleBmpPxToCanvasPx,
                             p);
                 }
-                canvas.drawLine((float) pts[0].x * scaleBmpPxToCanvasPx, (float) pts[0].y * scaleBmpPxToCanvasPx,
-                        (float) pts[pts.length - 1].x * scaleBmpPxToCanvasPx, (float) pts[pts.length - 1].y * scaleBmpPxToCanvasPx,
-                        p);
             }
+
+            // Draw threshold in corner
+            Bitmap camOut = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565);
+            Utils.matToBitmap(thresholded, camOut);
+            canvas.drawBitmap(camOut, null, new android.graphics.Rect((int) (onscreenWidth * 0.75),
+                    (int) (onscreenHeight * 0.75),
+                    (int) (onscreenWidth),
+                    (int) (onscreenHeight)), null);
+
+            // Draw HSV in corner
+            camOut = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565);
+            Utils.matToBitmap(hsv, camOut);
+            canvas.drawBitmap(camOut, null, new android.graphics.Rect((int) (onscreenWidth * 0.75),
+                    (int) (onscreenHeight * 0.5),
+                    (int) (onscreenWidth),
+                    (int) (onscreenHeight * 0.75)), null);
+
+
+            // Draw individual H,S, and V thresholds
+
+            Core.inRange(hsv, new Scalar(minColor().val[0], 0, 0), new Scalar(maxColor().val[0], 255, 255), th);
+            Core.inRange(hsv, new Scalar(0, minColor().val[1], 0), new Scalar(255, maxColor().val[1], 255), ts);
+            Core.inRange(hsv, new Scalar(0, 0, minColor().val[2]), new Scalar(255, 255, maxColor().val[2]), tv);
+
+            camOut = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565);
+            Utils.matToBitmap(th, camOut);
+            canvas.drawBitmap(camOut, null, new android.graphics.Rect((int) (0),
+                    (int) (0),
+                    (int) (onscreenWidth * 0.20),
+                    (int) (onscreenHeight * 0.15)), null);
+
+            camOut = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565);
+            Utils.matToBitmap(ts, camOut);
+            canvas.drawBitmap(camOut, null, new android.graphics.Rect((int) (onscreenWidth * 0.20),
+                    (int) (0),
+                    (int) (onscreenWidth * 0.40),
+                    (int) (onscreenHeight * 0.15)), null);
+
+            camOut = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565);
+            Utils.matToBitmap(tv, camOut);
+            canvas.drawBitmap(camOut, null, new android.graphics.Rect((int) (onscreenWidth * 0.40),
+                    (int) (0),
+                    (int) (onscreenWidth * 0.60),
+                    (int) (onscreenHeight * 0.15)), null);
+
+
+            // Draw color blocks for min and max
+            p.setStyle(Paint.Style.FILL);
+            p.setColor(Color.HSVToColor(new float[]{(float) (minColor().val[0] * 360.0 / 255.0), (float) (minColor().val[1] / 255.0), (float) (minColor().val[2] / 255.0)}));
+            canvas.drawRect(new android.graphics.Rect((int) (onscreenWidth * 0.45),
+                    (int) (onscreenHeight * 0.95),
+                    (int) (onscreenWidth * 0.5),
+                    (int) (onscreenHeight)), p);
+
+            p.setColor(Color.HSVToColor(new float[]{(float) (maxColor().val[0] * 360.0 / 255.0), (float) (maxColor().val[1] / 255.0), (float) (maxColor().val[2] / 255)}));
+            canvas.drawRect(new android.graphics.Rect((int) (onscreenWidth * 0.5),
+                    (int) (onscreenHeight * 0.95),
+                    (int) (onscreenWidth * 0.55),
+                    (int) (onscreenHeight)), p);
+
         }
-
-        // Draw threshold in corner
-        Bitmap camOut = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565);
-        Utils.matToBitmap(thresholded, camOut);
-        canvas.drawBitmap(camOut, null, new android.graphics.Rect((int) (onscreenWidth * 0.75),
-                (int) (onscreenHeight * 0.75),
-                (int) (onscreenWidth),
-                (int) (onscreenHeight)), null);
-
-        // Draw HSV in corner
-        camOut = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565);
-        Utils.matToBitmap(hsv, camOut);
-        canvas.drawBitmap(camOut, null, new android.graphics.Rect((int) (onscreenWidth * 0.75),
-                (int) (onscreenHeight * 0.5),
-                (int) (onscreenWidth),
-                (int) (onscreenHeight * 0.75)), null);
-
-
-        // Draw individual H,S, and V thresholds
-
-        Core.inRange(hsv, new Scalar(minColor().val[0],0,0), new Scalar(maxColor().val[0],255,255), th);
-        Core.inRange(hsv, new Scalar(0,minColor().val[1],0), new Scalar(255,maxColor().val[1],255), ts);
-        Core.inRange(hsv, new Scalar(0,0,minColor().val[2]), new Scalar(255,255,maxColor().val[2]), tv);
-
-        camOut = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565);
-        Utils.matToBitmap(th, camOut);
-        canvas.drawBitmap(camOut, null, new android.graphics.Rect((int) (0),
-                (int) (0),
-                (int) (onscreenWidth * 0.20),
-                (int) (onscreenHeight * 0.15)), null);
-
-        camOut = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565);
-        Utils.matToBitmap(ts, camOut);
-        canvas.drawBitmap(camOut, null, new android.graphics.Rect((int) (onscreenWidth * 0.20),
-                (int) (0),
-                (int) (onscreenWidth * 0.40),
-                (int) (onscreenHeight * 0.15)), null);
-
-        camOut = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565);
-        Utils.matToBitmap(tv, camOut);
-        canvas.drawBitmap(camOut, null, new android.graphics.Rect((int) (onscreenWidth * 0.40),
-                (int) (0),
-                (int) (onscreenWidth * 0.60),
-                (int) (onscreenHeight * 0.15)), null);
-
-
-        // Draw color blocks for min and max
-        p.setStyle(Paint.Style.FILL);
-        p.setColor(Color.HSVToColor(new float[]{(float) (minColor().val[0] * 360.0/255.0), (float) (minColor().val[1] / 255.0),(float) (minColor().val[2] / 255.0)}));
-        canvas.drawRect(new android.graphics.Rect((int) (onscreenWidth * 0.45),
-                (int) (onscreenHeight * 0.95),
-                (int) (onscreenWidth * 0.5),
-                (int) (onscreenHeight)), p);
-
-        p.setColor(Color.HSVToColor(new float[]{(float) (maxColor().val[0] * 360.0/255.0), (float) (maxColor().val[1] / 255.0),(float)  (maxColor().val[2] / 255)}));
-        canvas.drawRect(new android.graphics.Rect((int) (onscreenWidth * 0.5),
-                (int) (onscreenHeight * 0.95),
-                (int) (onscreenWidth * 0.55),
-                (int) (onscreenHeight)), p);
 
     }
 
