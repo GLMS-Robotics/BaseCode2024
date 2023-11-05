@@ -80,13 +80,16 @@ public final class MecanumDrive extends Subsystem {
         public double kA = 0;
 
         // path profile parameters (in inches)
-        public double maxWheelVel = 50;
-        public double minProfileAccel = -30;
-        public double maxProfileAccel = 50;
+        public double maxWheelVel = 25;
+        public double minProfileAccel = -20;
+        public double maxProfileAccel = 25;
 
         // turn profile parameters (in radians)
-        public double maxAngVel = Math.PI; // shared with path
-        public double maxAngAccel = Math.PI;
+        public double maxAngVel = Math.PI / 2.0; // shared with path
+        public double maxAngAccel = Math.PI / 2.0;
+
+        // Default max speed
+        public double maxTranslation = 25;
 
         // path controller gains
         public double axialGain = 0.0;
@@ -108,7 +111,8 @@ public final class MecanumDrive extends Subsystem {
     public final VelConstraint defaultVelConstraint =
             new MinVelConstraint(Arrays.asList(
                     kinematics.new WheelVelConstraint(PARAMS.maxWheelVel),
-                    new AngularVelConstraint(PARAMS.maxAngVel)
+                    new AngularVelConstraint(PARAMS.maxAngVel),
+                    new TranslationalVelConstraint(PARAMS.maxTranslation)
             ));
     public final AccelConstraint defaultAccelConstraint =
             new ProfileAccelConstraint(PARAMS.minProfileAccel, PARAMS.maxProfileAccel);
