@@ -528,14 +528,19 @@ public final class MecanumDrive extends Subsystem {
         return new TrajectoryActionBuilder(
                 TurnAction::new,
                 FollowTrajectoryAction::new,
-                beginPose, 1e-6, 0.0,
+                new TrajectoryBuilderParams(
+                        1e-6,
+                        new ProfileParams(
+                                0.25, 0.1, 1e-2
+                        )
+                ),
+                beginPose, 0.0,
                 defaultTurnConstraints,
                 new MinVelConstraint(Arrays.asList(
                         kinematics.new WheelVelConstraint(PARAMS.maxWheelVel),
                         new AngularVelConstraint(PARAMS.maxAngVel),
                         new TranslationalVelConstraint(maxVelOverride)
-                )), defaultAccelConstraint,
-                0.25, 0.1
+                )), defaultAccelConstraint
         );
     }
 }
