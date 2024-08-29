@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Disconnect From Robot" type="ShConfigurationType">
-    <option name="SCRIPT_TEXT" value="adb disconnect" />
+    <option name="SCRIPT_TEXT" value="cd &quot;$env:appdata\..\local\Android\Sdk\platform-tools&quot;;./adb disconnect" />
     <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
     <option name="SCRIPT_PATH" value="" />
     <option name="SCRIPT_OPTIONS" value="" />
