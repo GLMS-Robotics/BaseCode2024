@@ -16,9 +16,9 @@ public class Robot {
     // TODO Your Subsystems Here
     // For example:
     // public static MySubsystem mySubsystem;
-    
-    // TODO uncomment when MecanumDrive is ready to go
-    //public static MecanumDrive mecanumDrive;
+
+
+    public static MecanumDrive mecanumDrive;
     
     // We also need an array of subsystems
     // Fill this in in the initHardware method below
@@ -30,8 +30,6 @@ public class Robot {
     public static void initHardware(HardwareMap hardwareMap)
     {
         // We want to keep the current pose if this isn't our first op mode
-        // TODO uncomment this when MecanumDrive is ready to go
-        /*
         Pose2d startPose;
         if(mecanumDrive != null)
             startPose = mecanumDrive.pose;
@@ -39,9 +37,9 @@ public class Robot {
             startPose = new Pose2d(0,0,0);
 
         mecanumDrive = new MecanumDrive(hardwareMap, startPose);
-        */
 
-        // TOOD Initialize your subsystems
+
+        // TODO Initialize your subsystems
         // For example:
         // mySubsystem = new mySubsystem(hardwareMap);
 
@@ -49,6 +47,7 @@ public class Robot {
                 // TODO List your subsystems here, putting a comma after each one except the last
                 // For example:
                 // mySubsystem,
+                mecanumDrive
         };
 
     }

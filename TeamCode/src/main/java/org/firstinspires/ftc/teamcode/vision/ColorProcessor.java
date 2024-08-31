@@ -71,43 +71,45 @@ public abstract class ColorProcessor implements VisionProcessor {
     @Override
     public Object processFrame(Mat frame, long captureTimeNanos) {
 
-        // TODO Fill in the image processing steps from the Imgproc libarary
-
         // Blur the image slightly
-        // Params: (frame, blurred, new Size(11,11), 1.0)
+        Imgproc.GaussianBlur(frame, blurred, new Size(11,11), 1.0);
 
 
         // To HSV
-        // Params: (blurred, hsv, Imgproc.COLOR_RGB2HSV)
+        Imgproc.cvtColor(blurred, hsv, Imgproc.COLOR_RGB2HSV);
 
 
         // Threshold the image
         // Note: This one is in Core, not Imgproc
-        // Params: (hsv, minColor(), maxColor(), thresholded)
+        Core.inRange(hsv, minColor(), maxColor(), thresholded);
 
 
         contours.clear();
         // Find contours (blobs) in the image
-        // Params: (thresholded, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE)
+        Imgproc.findContours(thresholded, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
 
 
         /*
-        TODO
         Now we need to pick the biggest "contour" on the image.
         A "contour" is just a fancy word for a blob of color, or the outlines around it.
         Using a loop, go through the `contours` variable and set `biggestIndex` to the
         index of the largest one.
         Also, make sure to ignore contours less than `minArea()` in size!
-        HINT 1: You will need a loop!
-        HINT 2: contours.get(7) gets contour index 7
-        HINT 3: Imgproc.contourArea(c) calculates the area of contour c
          */
         // Pick the biggest contour
         int biggestIndex = -1;
         double biggestArea = 0.0;
-        //???
 
-
+        for(int j=0; j < contours.size(); j++)
+        {
+            double area = Imgproc.contourArea(contours.get(j));
+            // Is this the biggest one yet?
+            if(area > biggestArea && area > minArea()) {
+                // Yes, keep this contour
+                biggestIndex = j;
+                biggestArea = area;
+            }
+        }
 
         // Did we find anything?
         if(biggestIndex >= 0)
