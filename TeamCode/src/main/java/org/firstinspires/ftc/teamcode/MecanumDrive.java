@@ -86,7 +86,7 @@ public final class MecanumDrive extends Subsystem {
                 RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
 
         // drive model parameters
-        public double inPerTick = 1;
+        public double inPerTick = 1; //Theoretical on gobuilda modules: 0.00296843
         public double lateralInPerTick = inPerTick;
         public double trackWidthTicks = 0;
 
