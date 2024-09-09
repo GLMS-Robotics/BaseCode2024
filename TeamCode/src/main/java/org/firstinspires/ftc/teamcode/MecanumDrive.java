@@ -86,17 +86,17 @@ public final class MecanumDrive extends Subsystem {
                 RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
 
         // drive model parameters
-        public double inPerTick = 1; //Theoretical on gobuilda modules: 0.00296843
+        public double inPerTick = 104 / 34761.5; //Theoretical on gobuilda modules: 0.00296843
         public double lateralInPerTick = inPerTick;
-        public double trackWidthTicks = 0;
+        public double trackWidthTicks = 4480.594504588305;
 
         // feedforward parameters (in tick units)
-        public double kS = 0;
-        public double kV = 0;
-        public double kA = 0;
+        public double kS = 0.9093018117442164;
+        public double kV = 0.0005511604684154746;
+        public double kA = 0.00002;
 
         // path profile parameters (in inches)
-        public double maxWheelVel = 25;
+        public double maxWheelVel = (312.0 / 60.0) * (100 / 25.4 * Math.PI);
         public double minProfileAccel = -20;
         public double maxProfileAccel = 25;
 
@@ -108,13 +108,13 @@ public final class MecanumDrive extends Subsystem {
         public double maxTranslation = 25;
 
         // path controller gains
-        public double axialGain = 0.0;
-        public double lateralGain = 0.0;
-        public double headingGain = 0.0; // shared with turn
+        public double axialGain = 5.0;
+        public double lateralGain = 6.0;
+        public double headingGain = 3.0; // shared with turn
 
-        public double axialVelGain = 0.0;
-        public double lateralVelGain = 0.0;
-        public double headingVelGain = 0.0; // shared with turn
+        public double axialVelGain = 0.005;
+        public double lateralVelGain = 0.001;
+        public double headingVelGain = 0.005; // shared with turn
     }
 
     public static Params PARAMS = new Params();
