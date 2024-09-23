@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.Pose2d;
+import com.qualcomm.hardware.digitalchickenlabs.CachingOctoQuad;
+import com.qualcomm.hardware.digitalchickenlabs.OctoQuadBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.subsystems.Subsystem;
@@ -12,6 +14,8 @@ import org.firstinspires.ftc.teamcode.subsystems.Subsystem;
  * You will use it from your opmodes to access the robot's hardware.
  */
 public class Robot {
+
+    public static CachingOctoQuad octoQuad;
 
     // TODO Your Subsystems Here
     // For example:
@@ -50,6 +54,30 @@ public class Robot {
                 mecanumDrive
         };
 
+    }
+
+    /**
+     * This method is split out from initHardware so that it can be run from MecanumDrive.
+     * That way, the OctoQuad is still initialized in tuning op modes.
+     */
+    public static void configureOctoquad(HardwareMap hardwareMap) {
+        // Set up octoquad
+        // 0-3 are for quad encoders, 4-7 are for absolute
+        // Also set to manual cache mode
+        octoQuad = hardwareMap.get(CachingOctoQuad.class, "octoquad");
+        octoQuad.setChannelBankConfig(OctoQuadBase.ChannelBankConfig.BANK1_QUADRATURE_BANK2_PULSE_WIDTH);
+        octoQuad.setAllVelocitySampleIntervals(25);
+        for(int j=4; j<8; j++)
+        {
+            // Set PWM to match rev through bore encoders
+            octoQuad.setSingleChannelPulseWidthParams (j, 1,1024);
+        }
+
+        // Would have preferred to use manual, but can't seem to sneak in a refresh call for RR tuning
+        octoQuad.setCachingMode(CachingOctoQuad.CachingMode.AUTO);
+
+        // Called from MecanumDrive instead so that encoder reversals are saved
+        //octoQuad.saveParametersToFlash();
     }
 
 

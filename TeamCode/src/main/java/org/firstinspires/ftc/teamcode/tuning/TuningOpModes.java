@@ -23,6 +23,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
 
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
+import org.firstinspires.ftc.teamcode.NavXOctoQuadLocalizer;
+import org.firstinspires.ftc.teamcode.NavXTwoDeadWheelLocalizer;
 import org.firstinspires.ftc.teamcode.TankDrive;
 import org.firstinspires.ftc.teamcode.ThreeDeadWheelLocalizer;
 import org.firstinspires.ftc.teamcode.TwoDeadWheelLocalizer;
@@ -36,7 +38,7 @@ public final class TuningOpModes {
     public static final Class<?> DRIVE_CLASS = MecanumDrive.class;
 
     public static final String GROUP = "quickstart";
-    public static final boolean DISABLED = true;
+    public static final boolean DISABLED = false;
 
     private TuningOpModes() {}
 
@@ -74,12 +76,20 @@ public final class TuningOpModes {
                     TwoDeadWheelLocalizer dl = (TwoDeadWheelLocalizer) md.localizer;
                     parEncs.add(dl.par);
                     perpEncs.add(dl.perp);
+                } else if (md.localizer instanceof NavXTwoDeadWheelLocalizer) {
+                    NavXTwoDeadWheelLocalizer dl = (NavXTwoDeadWheelLocalizer) md.localizer;
+                    parEncs.add(dl.par);
+                    perpEncs.add(dl.perp);
+                } else if (md.localizer instanceof NavXOctoQuadLocalizer) {
+                    NavXOctoQuadLocalizer dl = (NavXOctoQuadLocalizer) md.localizer;
+                    parEncs.add(dl.par);
+                    perpEncs.add(dl.perp);
                 } else {
                     throw new RuntimeException("unknown localizer: " + md.localizer.getClass().getName());
                 }
 
                 return new DriveView(
-                    DriveType.MECANUM,
+                        DriveType.MECANUM,
                         MecanumDrive.PARAMS.inPerTick,
                         MecanumDrive.PARAMS.maxWheelVel,
                         MecanumDrive.PARAMS.minProfileAccel,
@@ -128,7 +138,7 @@ public final class TuningOpModes {
                 }
 
                 return new DriveView(
-                    DriveType.TANK,
+                        DriveType.TANK,
                         TankDrive.PARAMS.inPerTick,
                         TankDrive.PARAMS.maxWheelVel,
                         TankDrive.PARAMS.minProfileAccel,

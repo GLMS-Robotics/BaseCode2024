@@ -262,7 +262,15 @@ public final class MecanumDrive extends Subsystem {
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick);
+        // Set up octoquad
+        // Written here so that RR tuning op modes boot the octoquad
+        Robot.configureOctoquad(hardwareMap);
+
+        localizer = new NavXOctoQuadLocalizer(hardwareMap, PARAMS.inPerTick);
+        //localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick);
+
+        // Save octoquad config to flash
+        Robot.octoQuad.saveParametersToFlash();
 
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
     }
@@ -466,6 +474,8 @@ public final class MecanumDrive extends Subsystem {
     }
 
     public PoseVelocity2d updatePoseEstimate() {
+        Robot.octoQuad.refreshCache();
+
         Twist2dDual<Time> twist = localizer.update();
         pose = pose.plus(twist.value());
 
