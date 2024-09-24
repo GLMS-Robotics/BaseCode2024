@@ -105,7 +105,10 @@ public abstract class ActionAutonomous extends OpMode {
      * Return a reference to your robot's drivetrain in this function.
      * This will be used to set the starting pose.
      */
-    public abstract MecanumDrive getDrivetrain();
+    public MecanumDrive getDrivetrain()
+    {
+        return Robot.mecanumDrive;
+    }
 
 
     /**
