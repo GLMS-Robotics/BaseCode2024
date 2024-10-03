@@ -96,7 +96,7 @@ public final class MecanumDrive extends Subsystem {
         public double kA = 0.00002;
 
         // path profile parameters (in inches)
-        public double maxWheelVel = (312.0 / 60.0) * (100 / 25.4 * Math.PI);
+        public double maxWheelVel = (435.0 / 60.0) * (96 / 25.4 * Math.PI);
         public double minProfileAccel = -20;
         public double maxProfileAccel = 25;
 
@@ -105,7 +105,7 @@ public final class MecanumDrive extends Subsystem {
         public double maxAngAccel = Math.PI / 2.0;
 
         // Default max speed
-        public double maxTranslation = 25;
+        public double maxTranslation = 60;
 
         // path controller gains
         public double axialGain = 5.0;
