@@ -519,6 +519,13 @@ public final class MecanumDrive extends Subsystem {
         c.strokeLine(p1.x, p1.y, p2.x, p2.y);
     }
 
+    /**
+     * Used to make a RoadRunner autonomous. Returns a TrajectoryActionBuilder object;
+     * chain method calls using Builder-style syntax to assemble an autonomous, then
+     * call ".build()" to convert to a runnable action.
+     * @param beginPose Starting location for the auto
+     * @return TrajectoryActionBuilder used to build an autonomous
+     */
     public TrajectoryActionBuilder actionBuilder(Pose2d beginPose) {
         return new TrajectoryActionBuilder(
                 TurnAction::new,
@@ -535,6 +542,13 @@ public final class MecanumDrive extends Subsystem {
         );
     }
 
+    /**
+     * Override of actionBuilder() to quickly set a different max speed.
+     * @param beginPose Starting location for the auto
+     * @param maxVelOverride Max robot translation speed, in in/s. See maxTranslation
+     *                       variable in MecanumDrive for default value.
+     * @return TrajectoryActionBuilder used to build an autonomous
+     */
     public TrajectoryActionBuilder actionBuilder(Pose2d beginPose, double maxVelOverride) {
         return new TrajectoryActionBuilder(
                 TurnAction::new,
@@ -552,6 +566,46 @@ public final class MecanumDrive extends Subsystem {
                         new AngularVelConstraint(PARAMS.maxAngVel),
                         new TranslationalVelConstraint(maxVelOverride)
                 )), defaultAccelConstraint
+        );
+    }
+
+    /**
+     * Override of actionBuilder() to change velocity and profile constraints in detail.
+     * Be careful editing these, the robot will go nuts without sane limits.
+     * @param beginPose Starting location for the auto
+     * @param velocityConstraint Set of all velocity constraints for the path and robot.
+     *                           Example (but insert desired numbers):
+     *                           new MinVelConstraint(Arrays.asList(
+     *                              kinematics.new WheelVelConstraint(PARAMS.maxWheelVel),
+     *                              new AngularVelConstraint(PARAMS.maxAngVel),
+     *                              new TranslationalVelConstraint(PARAMS.maxTranslation)
+     *                            ))
+     * @param accelConstraint Set of all acceleration constraints used to limit robot acceleration.
+     *                        Example (but insert desired numbers):
+     *                        new ProfileAccelConstraint(PARAMS.minProfileAccel, PARAMS.maxProfileAccel)
+     * @param turnConstraints Set of all constraints used to control robot rotation.
+     *                        Example (but insert desired numbers):
+     *                        new TurnConstraints(
+     *                          PARAMS.maxAngVel, -PARAMS.maxAngAccel, PARAMS.maxAngAccel)
+     * @return TrajectoryActionBuilder used to build an autonomous
+     */
+    public TrajectoryActionBuilder actionBuilder(Pose2d beginPose,
+                                                 VelConstraint velocityConstraint,
+                                                 AccelConstraint accelConstraint,
+                                                 TurnConstraints turnConstraints) {
+        return new TrajectoryActionBuilder(
+                TurnAction::new,
+                FollowTrajectoryAction::new,
+                new TrajectoryBuilderParams(
+                        1e-6,
+                        new ProfileParams(
+                                0.25, 0.1, 1e-2
+                        )
+                ),
+                beginPose, 0.0,
+                turnConstraints,
+                velocityConstraint,
+                accelConstraint
         );
     }
 }
